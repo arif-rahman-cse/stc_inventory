@@ -1,0 +1,6 @@
+Django
+django-crispy-forms
+Pillow
+djangorestframework
+xhtml2pdf
+django-admin-interface
