@@ -1,47 +1,35 @@
 {% extends "main/base.html" %}
 {% load static %}
+{% load crispy_forms_tags %}
 {% block content %}
 
-<div id="content" class="main-content">
-    <div class="container">
+    <div class="container p-4">
         <div class="row">
             <div class="col-lg-12 col-12 layout-spacing">
                 <div class="statbox widget box box-shadow">
                     <div class="widget-header">
                         <div class="row">
                             <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <h4>New Products</h4>
+                                <h4>Add New Products</h4>
                             </div>
                         </div>
                     </div>
                     <div class="widget-content widget-content-area">
-                        <form>
-                            <label for="img"> Image:</label>
-                            <input type="file" id="img" name="img" accept="image/*">
-
-                        </form>
-                        <br/><br/><br/>
 
 
-                        <form>
-                            <div class="row mb-4">
+                        <form  method="post">
+
+                            {% csrf_token %}
+
+                            <div class="row p-2">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label for="exampleFormControlInput1">Product Name:</label>
-                                        <input class="form-control" type="text" placeholder="Product Name">
+                                         {{ product_form.product_name|as_crispy_field }}
                                     </div>
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                        <label for="exampleFormControlInput1">Category</label>
-                                        <select class="form-control disabled-results">
-                                            <option value="one">Select ...</option>
-                                            <option value="one">Rotary Nickel screen</option>
-                                            <option value="three">Flat-Bed screen</option>
-
-                                            <option value="second">Reactive Dyes</option>
-                                            <option value="second">Auxiliaries</option>
-                                        </select>
+                                       {{ product_form.category|as_crispy_field }}
                                     </div>
                                 </div>
 
@@ -50,47 +38,33 @@
                             <div class="row mb-4">
                                 <div class="col">
                                     <div class="form-group">
-                                        <label for="exampleFormControlInput1">Origin</label>
-                                        <select class="form-control disabled-results">
-                                            <option value="one">Select ...</option>
-                                            <option value="one">CHINA</option>
-                                            <option value="three">SWISS</option>
-                                            <option value="second">INDIA</option>
-
-                                        </select>
+                                         {{ product_form.origin|as_crispy_field }}
                                     </div>
                                 </div>
                                 <div class="col">
 
                                     <div class="form-group">
-                                        <label for="exampleFormControlInput1">Packing</label>
-                                        <input class="form-control" type="text" placeholder="Packing Type">
+                                       {{ product_form.packing|as_crispy_field }}
                                     </div>
 
                                 </div>
                                 <div class="col">
                                     <div class="form-group">
-                                        <label for="exampleFormControlInput1">Price</label>
-                                        <input class="form-control" type="text" placeholder="Input Price">
+                                        {{ product_form.price|as_crispy_field }}
                                     </div>
                                 </div>
 
                             </div>
 
+                             <input type="submit" class="btn btn-primary">
 
                         </form>
                     </div>
 
-
-                    <input type="submit" name="time" class="btn btn-primary">
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-
-    <!--  END CONTENT AREA  -->
-</div>
 
 {% endblock content %}

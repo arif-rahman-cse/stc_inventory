@@ -12,11 +12,13 @@
     <title>Shapno Trading Corporation </title>
     <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico"/>
     <link href="{% static 'assets/css/loader.css' %}" rel="stylesheet" type="text/css"/>
-    <script src="{% static 'assets/js/loader.js' %}"></script>
+        <script src="{% static 'assets/js/loader.js' %}"></script>
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <link href="{% static 'https://fonts.googleapis.com/css?family=Nunito:400,600,700' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:400,600,700" rel="stylesheet">
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css"/>
     <link href="{% static 'assets/css/plugins.css' %}" rel="stylesheet" type="text/css"/>
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- END GLOBAL MANDATORY STYLES -->
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
@@ -229,12 +231,16 @@
                             </svg>
                         </div>
                     </a>
-                    <ul class="collapse submenu list-unstyled" id="stock" data-parent="#accordionExample">
-                        <li>
-                            <a href="all-order.html">Stock Ledger</a>
+                    <ul class="collapse submenu list-unstyled {% if nav_bar == 'stock_ledger' or nav_bar == 'new_lc' or nav_bar == 'add_stock'%} show {% endif %}" id="stock" data-parent="#accordionExample">
+
+                        <li class="{% if nav_bar == 'add_stock' %} active {% endif %}" >
+                            <a href="{% url 'add-stock' %}">Add Stock</a>
                         </li>
-                        <li>
-                            <a href="add-new-order.html">Stock Ledger 2</a>
+                        <li class="{% if nav_bar == 'stock_ledger' %} active {% endif %}" >
+                            <a href="{% url 'stock-ledger' %}">Stock Ledger</a>
+                        </li>
+                        <li class="{% if nav_bar == 'new_lc' %} active {% endif %}" >
+                            <a href="{% url 'new-lc' %}">New LC</a>
                         </li>
                     </ul>
                 </li>
@@ -260,12 +266,12 @@
                             </svg>
                         </div>
                     </a>
-                    <ul class="collapse submenu list-unstyled" id="order" data-parent="#accordionExample">
-                        <li>
-                            <a href="all-order.html">All Order</a>
+                    <ul class="collapse submenu list-unstyled {% if nav_bar == 'orders' or nav_bar == 'new_order' %} show {% endif %} " id="order" data-parent="#accordionExample">
+                        <li class="{% if nav_bar == 'orders' %} active {% endif %}" >
+                            <a href="{% url 'orders-list' %}">All Order</a>
                         </li>
-                        <li>
-                            <a href="add-new-order.html">Add New Order</a>
+                        <li class="{% if nav_bar == 'new_order' %} active {% endif %}">
+                            <a href="{% url 'new-order' %}">Add New Order</a>
                         </li>
                     </ul>
                 </li>
@@ -440,10 +446,9 @@
 <script src="{% static 'assets/js/app.js' %}"></script>
 <script>
         $(document).ready(function() {
+
             App.init();
         });
-
-
 </script>
 <script src="{% static 'assets/js/custom.js' %}"></script>
 <!-- END GLOBAL MANDATORY SCRIPTS -->

@@ -232,7 +232,28 @@ var App = function() {
             inBuiltfunctionality.mainCatActivateScroll();
             inBuiltfunctionality.preventScrollBody();
             inBuiltfunctionality.functionalDropdown();
+
+            stock_calculation();
+
         }
+    }
+
+    function stock_calculation() {
+        console.log("Add New Stock");
+        $('#id_quantity').keyup(function () {
+            var qty = $(this).val()
+             console.log("Stock Qyt: "+qty);
+        });
+         $('#id_lc_per_dollar_cost_tk').keyup(function () {
+            var lc_per_dollar_cost_tk = $(this).val()
+             console.log("Per Dollar rate: "+lc_per_dollar_cost_tk);
+        });
+         $('#id_lc_unit_cost_usd').keyup(function () {
+            var lc_unit_cost_usd = $(this).val()
+             console.log("USD Cost: "+lc_unit_cost_usd);
+        });
+
+        $("#id_lc_unit_cost_tk").val(55);
     }
 
 }();

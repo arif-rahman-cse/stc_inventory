@@ -1,80 +1,74 @@
 {% extends "main/base.html" %}
 {% load static %}
 {% block content %}
+{% load crispy_forms_tags %}
 
-<div id="content" class="main-content">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 col-12 layout-spacing">
-                <div class="statbox widget box box-shadow">
-                    <div class="widget-header">
-                        <div class="row">
-                            <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <h4>New Customer</h4>
-                            </div>
+<div class="container p-4">
+    <div class="row">
+        <div class="col-lg-12 col-12 layout-spacing">
+            <div class="statbox widget box box-shadow">
+                <div class="widget-header">
+                    <div class="row">
+                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                            <h4>Create New Customer</h4>
                         </div>
                     </div>
-                    <div class="widget-content widget-content-area">
-
-                        <form>
-                            <div class="row mb-4">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="exampleFormControlInput1">Customer Code:</label>
-                                        <input class="form-control" type="text" placeholder="CUS-00001" readonly>
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="exampleFormControlInput1">Customer Name:</label>
-                                        <input class="form-control" type="text" placeholder="Customer Name">
-                                    </div>
-                                </div>
-
-                                   <div class="col">
-                                    <div class="form-group">
-                                        <label for="exampleFormControlInput1">Customer Phone:</label>
-                                        <input class="form-control" type="text" placeholder="Customer Phone">
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div class="row mb-4">
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="exampleFormControlInput1">Proprietor Name</label>
-                                        <input class="form-control" type="text" placeholder="Proprietor Name">
-                                    </div>
-                                </div>
-
-                                <div class="col">
-                                    <div class="form-group">
-                                        <label for="exampleFormControlInput1">Customer Address:</label>
-                                        <input class="form-control" type="text" placeholder="Customer Address">
-                                    </div>
-                                </div>
-
-
-
-                            </div>
-
-
-                        </form>
-                    </div>
-
-
-                    <input type="submit" name="time" class="btn btn-primary">
-
-                    </form>
                 </div>
+                <div class="widget-content widget-content-area">
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="row mb-2">
+                            <div class="col">
+                                <div class="form-group">
+                                    {{ customer_form.customer_code|as_crispy_field }}
+
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                     {{ customer_form.customer_name|as_crispy_field }}
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    {{ customer_form.phone|as_crispy_field }}
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col">
+                                <div class="form-group">
+                                    {{ customer_form.email|as_crispy_field }}
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                   {{ customer_form.bin_no|as_crispy_field }}
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                     {{ customer_form.customer_address|as_crispy_field }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <input type="submit" class="btn btn-primary">
+                    </form>
+
+                </div>
+
+                </form>
             </div>
         </div>
     </div>
-
-
-    <!--  END CONTENT AREA  -->
 </div>
 
 {% endblock content %}
