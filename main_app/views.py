@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
 
@@ -5,6 +6,7 @@ from django.shortcuts import render
 
 
 # Create your views here.
+@login_required
 def stc_dashboard(request):
     context = {'title': 'Sales',
                'nav_bar': 'dashboard',

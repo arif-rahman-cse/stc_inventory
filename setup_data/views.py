@@ -1,4 +1,6 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
 from .models import Customers, Products, Category, Origin
 from .forms import CustomerCreateForm, ProductsCreateForm
@@ -12,14 +14,7 @@ from django.views.generic import (
     TemplateView)
 
 
-def all_products(request):
-    context = {'title': 'Product List',
-               'nav_bar': 'product_list',
-               }
-    return render(request, 'product/products.html', context)
-
-
-class AllProductsListView(ListView, ):
+class AllProductsListView(LoginRequiredMixin, ListView, ):
     model = Products  # Model I want to Covert to List
     template_name = 'product/products.html'  # Template Name
     context_object_name = 'products'  # Change default name of objectList
@@ -30,11 +25,12 @@ class AllProductsListView(ListView, ):
         context = super().get_context_data(**kwargs)
         context["title"] = "Product List"
         context["nav_bar"] = "product_list"
-        context['products'] = Products.objects.all().order_by('-updated_at')
+        context['products'] = self.model.objects.all().order_by('-updated_at')
         print(context)
         return context
 
 
+@login_required
 def add_new_product(request):
     template_name = 'product/add_new_product.html'
 
@@ -64,20 +60,7 @@ def add_new_product(request):
     })
 
 
-# def add_new_product(request):
-#     context = {'title': 'Add New Product',
-#                'nav_bar': 'add_new_product',
-#                }
-#     return render(request, 'product/add_new_product.html', context)
-
-
-# def all_customers(request):
-#     context = {'title': 'Customer List',
-#                'nav_bar': 'customer_list',
-#                }
-#     return render(request, 'customer/customers.html', context)
-
-class AllCustomerListView(ListView, ):
+class AllCustomerListView(LoginRequiredMixin, ListView, ):
     model = Customers  # Model I want to Covert to List
     template_name = 'customer/customers.html'  # Template Name
     context_object_name = 'customers'  # Change default name of objectList
@@ -88,17 +71,11 @@ class AllCustomerListView(ListView, ):
         context = super().get_context_data(**kwargs)
         context["title"] = "Customer List"
         context["nav_bar"] = "customer_list"
-        context['customers'] = Customers.objects.all().order_by('-updated_at')
-        print(context)
+        context['customers'] = self.model.objects.all().order_by('-updated_at')
         return context
 
 
-# def add_new_customers(request):
-#     context = {'title': 'Add New Customer',
-#                'nav_bar': 'add_new_customer',
-#                }
-#     return render(request, 'customer/add_new_customer.html', context)
-
+@login_required
 def add_new_customers(request):
     print("called")
     template_name = 'customer/add_new_customer.html'

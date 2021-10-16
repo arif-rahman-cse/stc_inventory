@@ -1,4 +1,7 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render, redirect
 
 # Create your views here.
@@ -8,16 +11,11 @@ from stock.forms import LcCreateForm, StockCreateForm
 from stock.models import LC, Stock
 
 
-def stock(request):
-    context = {'title': 'Stock List',
-               'nav_bar': 'stock_ledger',
-               }
-    return render(request, 'stock/stock_ledger.html', context)
-
-
+@login_required
 def add_new_lc(request):
     template_name = 'stock/new_lc.html'
-    lc_list = LC.objects.all().order_by('updated_at')
+    lc_list = LC.objects.all().order_by('-date', '-updated_at')
+
     if request.method == 'GET':
         lc_form = LcCreateForm(request.GET or None)
 
@@ -44,6 +42,7 @@ def add_new_lc(request):
     })
 
 
+@login_required
 def add_stock(request):
     template_name = 'stock/add_new_stock.html'
 
@@ -74,16 +73,16 @@ def add_stock(request):
     })
 
 
-class StockLedgerListView(ListView, ):
+class StockLedgerListView(LoginRequiredMixin, ListView,):
     model = Stock  # Model I want to Covert to List
     template_name = 'stock/stock_ledger.html'  # Template Name
     context_object_name = 'stocks'  # Change default name of objectList
-    ordering = ['-updated_at']  # Ordering post LIFO
-    paginate_by = 20  # number of page I want to show in single page
+    ordering = ['-stock_in_date', '-updated_at']  # Ordering post LIFO
+    paginate_by = 10  # number of page I want to show in single page
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["title"] = "Stock List"
         context["nav_bar"] = "stock_ledger"
-        context['products'] = Stock.objects.all().order_by('-updated_at')
+        context['stock_list'] = self.model.objects.all()
         return context

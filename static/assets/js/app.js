@@ -239,21 +239,30 @@ var App = function() {
     }
 
     function stock_calculation() {
-        console.log("Add New Stock");
+
         $('#id_quantity').keyup(function () {
-            var qty = $(this).val()
-             console.log("Stock Qyt: "+qty);
+              set_total_cost_amount();
         });
          $('#id_lc_per_dollar_cost_tk').keyup(function () {
-            var lc_per_dollar_cost_tk = $(this).val()
-             console.log("Per Dollar rate: "+lc_per_dollar_cost_tk);
+              set_total_cost_amount();
         });
          $('#id_lc_unit_cost_usd').keyup(function () {
-            var lc_unit_cost_usd = $(this).val()
-             console.log("USD Cost: "+lc_unit_cost_usd);
+            set_total_cost_amount();
         });
-
-        $("#id_lc_unit_cost_tk").val(55);
     }
+
+    function set_total_cost_amount() {
+        var qty = document.getElementById("id_quantity").value;
+        var lc_per_dollar_cost_tk = document.getElementById("id_lc_per_dollar_cost_tk").value;
+        var lc_unit_cost_usd = document.getElementById("id_lc_unit_cost_usd").value;
+
+        var lc_unit_cost_tk = lc_per_dollar_cost_tk * lc_unit_cost_usd;
+        var total_amount_tk = lc_unit_cost_tk * qty;
+
+        document.getElementById("id_lc_unit_cost_tk").value = lc_unit_cost_tk.toFixed(2);
+        document.getElementById("id_total_amount_tk").value = total_amount_tk.toFixed(2);
+
+    }
+
 
 }();

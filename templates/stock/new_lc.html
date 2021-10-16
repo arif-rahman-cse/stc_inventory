@@ -4,14 +4,17 @@
 {% block content %}
 
 
-<div class="container p-4">
+<div class="col-lg-12 p-4">
     <div class="row">
         <div class="col-lg-12 col-12 layout-spacing">
             <div class="statbox widget box box-shadow">
                 <div class="widget-header">
                     <div class="row">
                         <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                            <h4>New L/C Open</h4>
+
+                            <center>
+                                <h3><strong>New L/C Open</strong></h3>
+                            </center>
 
                         </div>
                     </div>
@@ -21,7 +24,7 @@
 
                     <form method="post">
                         {% csrf_token %}
-                        <div class="row p-2">
+                        <div class="row">
                             <div class="col">
                                 <div class="form-group">
                                     {{ lc_form.product|as_crispy_field }}
@@ -36,7 +39,7 @@
 
                         </div>
 
-                        <div class="row mb-4">
+                        <div class="row">
                             <div class="col">
                                 <div class="form-group">
                                     {{ lc_form.quantity|as_crispy_field }}
@@ -51,7 +54,10 @@
 
 
                         </div>
-                        <input type="submit" class="btn btn-primary">
+                        <div class="col-12 text-center">
+                            <button class="btn btn-primary" type="submit">Submit
+                            </button>
+                        </div>
                     </form>
                 </div>
 
@@ -62,12 +68,16 @@
                     <div class="widget-header">
                         <div class="row">
                             <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                <h4>L/C List</h4>
+                                <center>
+                                    <h3><strong>L/C List</strong></h3>
+                                </center>
+
                             </div>
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <table id="bootstrapdatatableemployee" class="table mb-0">
+
+                    <div class="scrollme">
+                        <table id="dataTable" class="table table-hover">
                             <thead>
                             <tr>
                                 <th style="text-align:center">Date</th>
@@ -90,7 +100,8 @@
                                 <td style="text-align:center">
                                     {% if item.status == "Open" %}
                                     <button type="button" class="btn btn-danger" data-toggle="modal"
-                                            data-target="#processmodal{{item.id}}">{{item.status}}</button>
+                                            data-target="#processmodal{{item.id}}">{{item.status}}
+                                    </button>
 
                                     <div class="modal fade" id="processmodal{{item.id}}" role="dialog">
                                         <div class="modal-dialog">
@@ -104,7 +115,8 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <p>Fie No:</p>
-                                                    <p>You are going to Process this LC.This process can not be undone.</p>
+                                                    <p>You are going to Process this LC.This process can not be
+                                                        undone.</p>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-danger" data-dismiss="modal">
@@ -121,10 +133,11 @@
                                     {% elif item.status == "Process" %}
                                     <a>
                                         <button class="btn btn-warning" data-toggle="modal"
-                                            data-target="#closemodal{{item.id}}">{{item.status}}</button>
+                                                data-target="#closemodal{{item.id}}">{{item.status}}
+                                        </button>
                                     </a>
 
-                                     <div class="modal fade" id="closemodal{{item.id}}" role="dialog">
+                                    <div class="modal fade" id="closemodal{{item.id}}" role="dialog">
                                         <div class="modal-dialog">
 
                                             <!-- Modal content-->
@@ -136,7 +149,8 @@
                                                 </div>
                                                 <div class="modal-body">
                                                     <p>Fie No:</p>
-                                                    <p>You are going to Closed this LC.This process can not be undone.</p>
+                                                    <p>You are going to Closed this LC.This process can not be
+                                                        undone.</p>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-danger" data-dismiss="modal">
@@ -151,7 +165,7 @@
                                     </div>
 
                                     {% else %}
-                                      <a>
+                                    <a>
                                         <button class="btn btn-success">{{item.status}}</button>
                                     </a>
                                     {% endif %}
@@ -211,14 +225,27 @@
 
                 </div>
 
-                </form>
             </div>
-
 
         </div>
     </div>
 
 </div>
+
+<script>
+$(document).ready(function() {
+    $('#dataTable').DataTable({
+        "bInfo" : false,
+        "paging": true,
+        columnDefs: [ { type: 'date', 'targets': [0] } ],
+        order: [[ 0, 'desc' ]],
+    });
+});
+
+
+
+
+</script>
 
 
 {% endblock content %}
