@@ -31,13 +31,15 @@
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
 
     <!--Data Table Scripts-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" ></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.20/datatables.min.js" defer></script>
 
     <!-- Data Table Style -->
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css"/>
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css" />
-    <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js" defer></script>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.3/css/dataTables.bootstrap4.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/1.11.3/js/dataTables.bootstrap4.min.js"
+            defer></script>
 
 
 </head>
@@ -68,7 +70,9 @@
 
 <!--  BEGIN NAVBAR  -->
 <div class="sub-header-container">
-    <header class="header navbar navbar-expand-sm">
+
+    <header class="navbar navbar-expand-sm navbar-light bg-light">
+
         <a href="javascript:void(0);" class="sidebarCollapse" data-placement="bottom">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -80,6 +84,7 @@
         </a>
 
         <ul class="navbar-nav flex-row">
+
             <li>
                 <div class="page-header">
 
@@ -92,30 +97,27 @@
 
                 </div>
             </li>
-        </ul>
-        <ul class="navbar-nav flex-row ml-auto ">
-            <li class="nav-item more-dropdown">
-                <div class="dropdown  custom-dropdown-icon">
-                    <a class="dropdown-toggle btn" href="#" role="button" id="customDropdown" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false"><span>Settings</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                             class="feather feather-chevron-down">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </a>
 
-                    <div class="dropdown-menu dropdown-menu-right" aria-labelledby="customDropdown">
-                        <a class="dropdown-item" data-value="Settings" href="javascript:void(0);">Settings</a>
-                        <a class="dropdown-item" data-value="Mail" href="javascript:void(0);">Mail</a>
-                        <a class="dropdown-item" data-value="Print" href="javascript:void(0);">Print</a>
-                        <a class="dropdown-item" data-value="Download" href="javascript:void(0);">Download</a>
-                        <a class="dropdown-item" data-value="Share" href="javascript:void(0);">Share</a>
-                    </div>
-                </div>
+        </ul>
+
+    </header>
+
+    {% if messages %}
+    {% for message in messages %}
+
+    <header class="navbar navbar-expand-sm navbar-light bg-light" id="error_message_id">
+
+        <ul class="nav justify-content-center">
+            <li class="nav-item">
+                 <a class="alert alert-{{message.tags}}">{{ message }}</a>
             </li>
+
         </ul>
     </header>
+
+    {% endfor %}
+    {% endif %}
+
 </div>
 <!--  END NAVBAR  -->
 
@@ -245,14 +247,17 @@
                             </svg>
                         </div>
                     </a>
-                    <ul class="collapse submenu list-unstyled {% if nav_bar == 'stock_ledger' or nav_bar == 'new_lc' or nav_bar == 'add_stock'%} show {% endif %}"
+                    <ul class="collapse submenu list-unstyled {% if nav_bar == 'stock_in_list' or nav_bar == 'new_lc' or nav_bar == 'add_stock' or nav_bar == 'transfer_stock' %} show {% endif %}"
                         id="stock" data-parent="#accordionExample">
 
                         <li class="{% if nav_bar == 'add_stock' %} active {% endif %}">
                             <a href="{% url 'add-stock' %}">Add Stock</a>
                         </li>
-                        <li class="{% if nav_bar == 'stock_ledger' %} active {% endif %}">
-                            <a href="{% url 'stock-ledger' %}">Stock Ledger</a>
+                        <li class="{% if nav_bar == 'stock_in_list' %} active {% endif %}">
+                            <a href="{% url 'stock-in-list' %}">Stock In List</a>
+                        </li>
+                        <li class="{% if nav_bar == 'transfer_stock' %} active {% endif %}">
+                            <a href="{% url 'transfer-stock' %}">Transfer Stock</a>
                         </li>
                         <li class="{% if nav_bar == 'new_lc' %} active {% endif %}">
                             <a href="{% url 'new-lc' %}">New LC</a>
@@ -446,14 +451,12 @@
 
         {% endblock %}
 
-
     </div>
 
     <!--  END CONTENT AREA  -->
 
 </div>
 <!-- END MAIN CONTAINER -->
-
 
 <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
 <script src="{% static 'assets/js/libs/jquery-3.1.1.min.js' %}"></script>
@@ -464,9 +467,32 @@
 <script>
 
         $(document).ready(function() {
-
             App.init();
         });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
