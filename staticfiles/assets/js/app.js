@@ -206,6 +206,7 @@ var App = function() {
 
     }
 
+    var send_parameters = {}
     return {
         init: function() {
             toggleFunction.overlay();
@@ -232,7 +233,89 @@ var App = function() {
             inBuiltfunctionality.mainCatActivateScroll();
             inBuiltfunctionality.preventScrollBody();
             inBuiltfunctionality.functionalDropdown();
+
+            stock_calculation();
+            getTransferableStock();
+
+            hideErrorMessage();
+
         }
     }
+
+    function hideErrorMessage() {
+            // suppose the `id` attribute of element is `message_container`.
+            var message_ele = document.getElementById("error_message_id");
+            setTimeout(function(){
+               message_ele.style.display = "none";
+            }, 5000);
+            // Timeout is 3 sec, you can change it
+            }
+
+
+    function getTransferableStock() {
+         console.log("Transferable Stock called ");
+
+        $('#id_transferable_qty').on('change', function () {
+            console.log("On Product select called ");
+            let product = $(this).children('option:selected').val();
+            $("#id_transferable_stock_qty").val("");
+            $("#id_from_warehouse").val("");
+            send_parameters['product_id'] = product;
+            send_parameters['warehouse_id'] = "";
+            console.log(product);
+            call_transferable_qty_api()
+        });
+
+            $('#id_from_warehouse').on('change', function () {
+            console.log("On Transfer Warehouse called ");
+            let warehouse = $(this).children('option:selected').val();
+            send_parameters['warehouse_id'] = warehouse;
+            console.log(warehouse);
+            call_transferable_qty_api()
+        });
+
+
+    }
+
+    function call_transferable_qty_api() {
+
+            $.ajax({
+            url: 'transferable-stock-qty/',
+            data: send_parameters,
+            dataType: 'json',
+            success: function (data) {
+                console.log(data);
+                //document.getElementById("id_transferable_stock_qty").value = data["supervisors"];
+                $("#id_transferable_stock_qty").val(data["transferable_qty"]);
+             }
+            });
+    }
+
+    function stock_calculation() {
+
+        $('#id_quantity').keyup(function () {
+              set_total_cost_amount();
+        });
+         $('#id_lc_per_dollar_cost_tk').keyup(function () {
+              set_total_cost_amount();
+        });
+         $('#id_lc_unit_cost_usd').keyup(function () {
+            set_total_cost_amount();
+        });
+    }
+
+    function set_total_cost_amount() {
+        var qty = document.getElementById("id_quantity").value;
+        var lc_per_dollar_cost_tk = document.getElementById("id_lc_per_dollar_cost_tk").value;
+        var lc_unit_cost_usd = document.getElementById("id_lc_unit_cost_usd").value;
+
+        var lc_unit_cost_tk = lc_per_dollar_cost_tk * lc_unit_cost_usd;
+        var total_amount_tk = lc_unit_cost_tk * qty;
+
+        document.getElementById("id_lc_unit_cost_tk").value = lc_unit_cost_tk.toFixed(2);
+        document.getElementById("id_total_amount_tk").value = total_amount_tk.toFixed(2);
+
+    }
+
 
 }();

@@ -8,13 +8,13 @@ from django.shortcuts import render, redirect
 from django.views.generic import ListView
 
 from stock.forms import LcCreateForm, StockCreateForm, StockTransferFrom
-from stock.models import LC, Stock, StockTransfer
+from stock.models import LC, Stock, StockTransfer, StockPrime
 
 
 @login_required
 def add_new_lc(request):
     template_name = 'stock/new_lc.html'
-    lc_list = LC.objects.all().order_by('-date', '-updated_at')
+    lc_list = LC.objects.all().order_by('-lc_date', '-updated_at')
 
     if request.method == 'GET':
         lc_form = LcCreateForm(request.GET or None)
@@ -27,11 +27,12 @@ def add_new_lc(request):
             obj.author = request.user
             obj.is_active = True
             obj.save()
-            messages.add_message(request, messages.SUCCESS, 'New Product Added Successfully!')
+            messages.add_message(request, messages.SUCCESS, 'New LC Create Successful!')
             return redirect('new-lc')
 
         else:
             print("Not Valid Create Form")
+            messages.add_message(request, messages.WARNING, 'Lc with this File no, Lc date and Product already exists.')
             print(lc_form.errors)
 
     return render(request, template_name, {
@@ -55,10 +56,26 @@ def add_stock(request):
         if stock_form.is_valid():
             obj = stock_form.save(commit=False)
             obj.author = request.user
-            obj.type = "Receipt"
-            obj.sign = 1
+            # obj.type = "Receipt"
+            # obj.sign = 1
             obj.is_active = True
             obj.save()
+
+            # Send To StockPrime
+            send_to_stock = StockPrime()
+            send_to_stock.ref_number = obj.transaction_no
+            send_to_stock.stock_in_date = obj.stock_in_date
+            send_to_stock.product = obj.product
+            send_to_stock.warehouse = obj.warehouse
+            send_to_stock.quantity = obj.quantity
+            send_to_stock.total_amount_tk = obj.total_amount_tk
+            send_to_stock.type = "Receipt"
+            send_to_stock.stock_transaction_type = "MNU"
+            send_to_stock.sign = 1
+            send_to_stock.author = obj.author
+            send_to_stock.is_active = True
+            send_to_stock.save()
+
             messages.add_message(request, messages.SUCCESS, 'New Stock Added Successfully!')
             return redirect('stock-in-list')
 
@@ -103,7 +120,7 @@ def transfer_stock(request):
             obj.status = "Open"
             obj.is_active = True
             obj.save()
-            messages.add_message(request, messages.SUCCESS, 'Stock Transfer Successfully!')
+            messages.add_message(request, messages.SUCCESS, 'Stock Transfer Request Successfully!')
             return redirect('transfer-stock')
 
         else:
@@ -122,25 +139,52 @@ def transfer_stock(request):
 def transfer_stock_confirm(request, stock_transfer_no):
     print("transfer_stock_confirm called")
     print("stock_transfer_no: " + stock_transfer_no)
-    stock = StockTransfer.objects.get(stock_transfer_no=stock_transfer_no)
-    transferable_qty = Stock.objects.filter(warehouse=stock.from_warehouse, product=stock.product).aggregate(
+    trans_stock = StockTransfer.objects.get(stock_transfer_no=stock_transfer_no)
+    transferable_qty = StockPrime.objects.filter(
+        warehouse=trans_stock.from_warehouse, product=trans_stock.product).aggregate(
         total_qty=Sum(F('quantity') * F('sign')))
 
     trf_able_qty = transferable_qty.get('total_qty')
-    trf_qty = stock.transfer_qty
+    trf_qty = trans_stock.transfer_qty
 
     print("Transferable Qty: " + str(trf_able_qty))
     print("Transfer Qty : " + str(trf_qty))
 
     if trf_qty <= trf_able_qty:
 
-        # trans_stock = Stock()
-        # trans_stock.ref_number = stock.stock_transfer_no
-        # trans_stock.contents = stock.stock_transfer_date
-        # trans_stock.contents = stock.product
-        # trans_stock.contents = stock.product
-        # trans_stock.save()
-        pass
+        # Transfer to stock Issue
+        send_to_stock_issue = StockPrime()
+        send_to_stock_issue.ref_number = trans_stock.stock_transfer_no
+        send_to_stock_issue.stock_in_date = trans_stock.stock_transfer_date
+        send_to_stock_issue.product = trans_stock.product
+        send_to_stock_issue.warehouse = trans_stock.from_warehouse
+        send_to_stock_issue.quantity = trans_stock.transfer_qty
+        send_to_stock_issue.total_amount_tk = 0.0
+        send_to_stock_issue.type = "Issue"
+        send_to_stock_issue.stock_transaction_type = "TRF"
+        send_to_stock_issue.sign = -1
+        send_to_stock_issue.author = trans_stock.author
+        send_to_stock_issue.is_active = True
+        send_to_stock_issue.save()
+
+        # Transfer to stock Receipt
+        send_to_stock_receipt = StockPrime()
+        send_to_stock_receipt.ref_number = trans_stock.stock_transfer_no
+        send_to_stock_receipt.stock_in_date = trans_stock.stock_transfer_date
+        send_to_stock_receipt.product = trans_stock.product
+        send_to_stock_receipt.warehouse = trans_stock.to_warehouse
+        send_to_stock_receipt.quantity = trans_stock.transfer_qty
+        send_to_stock_receipt.total_amount_tk = 0.0
+        send_to_stock_receipt.type = "Receipt"
+        send_to_stock_receipt.stock_transaction_type = "TRF"
+        send_to_stock_receipt.sign = 1
+        send_to_stock_receipt.author = trans_stock.author
+        send_to_stock_receipt.is_active = True
+        send_to_stock_receipt.save()
+
+        # Update Transfer  Status
+        trans_stock.status = "Transferred"
+        messages.add_message(request, messages.SUCCESS, 'Stock Transfer Successful !')
 
     else:
         messages.add_message(request, messages.WARNING, 'Insufficient stock! Transferable Stock: ' + str(trf_able_qty))
@@ -158,7 +202,7 @@ def transferable_stock_qty(request):
         print(warehouse_id)
 
         if product_id and warehouse_id:
-            transferable_qty = Stock.objects.filter(warehouse=warehouse_id, product=product_id).aggregate(
+            transferable_qty = StockPrime.objects.filter(warehouse=warehouse_id, product=product_id).aggregate(
                 total_qty=Sum(F('quantity') * F('sign')))
             print("Total Qty")
             print(transferable_qty)

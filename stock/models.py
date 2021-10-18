@@ -7,11 +7,15 @@ from setup_data.models import Products, Warehouse
 class LC(models.Model):
     created_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     updated_at = models.DateTimeField(blank=True, null=True, auto_now=True)
-    date = models.DateField(blank=True, null=True)
-    file_no = models.CharField(max_length=100, )
-    status = models.CharField(max_length=20, default="Open")
+    lc_date = models.DateField(blank=True, null=True)
     quantity = models.DecimalField(max_digits=20, decimal_places=2)
     product = models.ForeignKey(Products, on_delete=models.DO_NOTHING, )
+    file_no = models.CharField(max_length=100)
+    lc_per_dollar_cost_tk = models.DecimalField(max_digits=20, decimal_places=2)
+    lc_unit_cost_usd = models.DecimalField(max_digits=20, decimal_places=2)
+    lc_unit_cost_tk = models.DecimalField(max_digits=20, decimal_places=2)
+    total_amount_tk = models.DecimalField(max_digits=20, decimal_places=2)
+    status = models.CharField(max_length=20, default="Open")
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING, )
     is_active = models.BooleanField(default=True)
 
@@ -19,7 +23,7 @@ class LC(models.Model):
         return self.file_no
 
     class Meta:
-        unique_together = (('file_no', 'date', 'product'),)
+        unique_together = (('file_no', 'lc_date', 'product'),)
 
 
 def transaction_no():
@@ -49,18 +53,62 @@ def transaction_no():
 
 class Stock(models.Model):
     transaction_no = models.CharField(max_length=100, primary_key=True, default=transaction_no)
+    created_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
+    updated_at = models.DateTimeField(blank=True, null=True, auto_now=True)
+    stock_in_date = models.DateField(blank=True, null=True)
+    product = models.ForeignKey(Products, on_delete=models.DO_NOTHING, )
+    warehouse = models.ForeignKey(Warehouse, on_delete=models.DO_NOTHING, )
+    quantity = models.DecimalField(max_digits=20, decimal_places=2)
+    file_no = models.CharField(max_length=100)
+    lc_per_dollar_cost_tk = models.DecimalField(max_digits=20, decimal_places=2)
+    lc_unit_cost_usd = models.DecimalField(max_digits=20, decimal_places=2)
+    lc_unit_cost_tk = models.DecimalField(max_digits=20, decimal_places=2)
+    total_amount_tk = models.DecimalField(max_digits=20, decimal_places=2)
+    author = models.ForeignKey(User, on_delete=models.DO_NOTHING, )
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.transaction_no
+
+    class Meta:
+        unique_together = (('stock_in_date', 'file_no', 'product'),)
+
+
+def transaction_no_stock_prime():
+    # GET Current Date
+    today = datetime.date.today()
+
+    # Format the date like (20-11 YY-MM)
+    # Capital #Y means year including the century and small %y means  year without a century (range 00 to 99)
+    today_string = today.strftime('%Y%m')
+
+    # For the very first time invoice_number is YY-MM-DD-001
+    next_invoice_number = '00001'
+
+    # Get Last Invoice Number of Current Year, Month and Day (20-11-28 YY-MM-DD)
+    last_invoice = StockPrime.objects.filter(transaction_no__startswith=today_string).order_by('transaction_no').last()
+
+    if last_invoice:
+        # Cut 4 digit from the left and converted to int (2011:xxx)
+        last_invoice_number = int(last_invoice.transaction_no[6:])
+
+        # Increment one with last six digit
+        next_invoice_number = '{0:05d}'.format(last_invoice_number + 1)
+
+    # Return custom invoice number
+    return today_string + next_invoice_number
+
+
+class StockPrime(models.Model):
+    transaction_no = models.CharField(max_length=100, primary_key=True, default=transaction_no_stock_prime)
     ref_number = models.CharField(max_length=20, blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     updated_at = models.DateTimeField(blank=True, null=True, auto_now=True)
     stock_in_date = models.DateField(blank=True, null=True)
     product = models.ForeignKey(Products, on_delete=models.DO_NOTHING, )
-    file_no = models.CharField(max_length=100)
     warehouse = models.ForeignKey(Warehouse, on_delete=models.DO_NOTHING, )
     quantity = models.DecimalField(max_digits=20, decimal_places=2)
-    lc_per_dollar_cost_tk = models.DecimalField(max_digits=20, decimal_places=2)
-    lc_unit_cost_usd = models.DecimalField(max_digits=20, decimal_places=2)
-    lc_unit_cost_tk = models.DecimalField(max_digits=20, decimal_places=2)
-    total_amount_tk = models.DecimalField(max_digits=20, decimal_places=2)
+    total_amount_tk = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     type = models.CharField(max_length=100, blank=True, null=True)
     stock_transaction_type = models.CharField(max_length=100, blank=True, null=True)
     sign = models.IntegerField(blank=True, null=True)
@@ -68,8 +116,7 @@ class Stock(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.file_no
-
+        return self.transaction_no
 
 
 def stock_transfer_no():

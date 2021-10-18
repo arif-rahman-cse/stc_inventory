@@ -7,13 +7,22 @@ class LcCreateForm(forms.ModelForm):
     class Meta:
         model = LC
         fields = (
-            'file_no', 'date', 'quantity', 'product',)
+            'file_no', 'lc_date', 'quantity', 'product', 'lc_per_dollar_cost_tk',
+            'lc_unit_cost_usd', 'lc_unit_cost_tk', 'total_amount_tk',)
         widgets = {
             'file_no': forms.TextInput(attrs={'class': 'form-control', }),
             'product': forms.Select(attrs={'required': True, 'class': 'form-control', }),
             'quantity': forms.TextInput(attrs={'class': 'form-control'}),
-            'date': forms.DateTimeInput(format='%Y-%m-%d %H:%M:%S',
-                                        attrs={'required': True, 'class': 'form-control', 'type': 'date', }),
+            'lc_per_dollar_cost_tk': forms.NumberInput(
+                attrs={'class': 'form-control', 'value': '', 'id': 'id_lc_per_dollar_cost_tk'}),
+            'lc_unit_cost_usd': forms.NumberInput(
+                attrs={'class': 'form-control', 'value': '', 'id': 'id_lc_unit_cost_usd'}),
+            'lc_unit_cost_tk': forms.NumberInput(
+                attrs={'class': 'form-control', 'readonly': 'readonly', 'value': '', 'id': 'id_lc_unit_cost_tk'}),
+            'total_amount_tk': forms.NumberInput(
+                attrs={'class': 'form-control', 'readonly': 'readonly', 'value': '', 'id': 'id_total_amount_tk'}),
+            'lc_date': forms.DateTimeInput(format='%Y-%m-%d %H:%M:%S',
+                                           attrs={'required': True, 'class': 'form-control', 'type': 'date', }),
         }
 
 
