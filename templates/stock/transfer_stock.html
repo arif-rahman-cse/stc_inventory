@@ -118,8 +118,10 @@
                                 <td style="text-align:center">
 
                                     {% if item.status == "Open" %}
-                                    <button type="button" class="modal-popup btn btn-danger" data-qty={{item.transfer_qty}}
-                                            data-toggle="modal" data-target="#postmodal{{item.stock_transfer_no}}" >{{item.status}}
+                                    <button type="button" class="modal-popup btn btn-danger"
+                                            data-qty={{item.transfer_qty}}
+                                            data-toggle="modal" data-target="#postmodal{{item.stock_transfer_no}}">
+                                        {{item.status}}
                                     </button>
 
                                     <div class="modal fade" id="postmodal{{item.stock_transfer_no}}" role="dialog">
@@ -133,7 +135,8 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <h5 id="transfer_qty">Transfer Qty: {{item.transfer_qty}}</h5>
+                                                    <h5 id="transfer_qty" class="p-2">Transfer Qty:
+                                                        {{item.transfer_qty}}</h5>
                                                     <p>You are going to transfer this Stock. This process can not be
                                                         undone.</p>
                                                 </div>
@@ -162,9 +165,11 @@
                                     <a href="#">
                                         <button class="btn btn-outline-info"><i class="fa fa-edit"></i></button>
                                     </a>
-                                    <button class="modal-popup-delete btn btn-outline-danger" data-toggle="modal"  data-qty={{item.transfer_qty}} data-target="#postmodal2">
+                                    <button class="modal-popup-delete btn btn-outline-danger" data-toggle="modal"
+                                            data-qty={{item.transfer_qty}}
+                                            data-target="#postmodal2{{item.stock_transfer_no}}">
                                         <i class="fa fa-trash"></i></button>
-                                    <div class="modal fade" id="postmodal2" role="dialog">
+                                    <div class="modal fade" id="postmodal2{{item.stock_transfer_no}}" role="dialog">
                                         <div class="modal-dialog">
 
                                             <!-- Modal content-->
@@ -175,7 +180,7 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <h4 id="transfer_qty_delete" class="p-2"></h4>
+                                                    <h5 class="p-2">Transfer Qty: {{item.transfer_qty}}</h5>
                                                     <p>You are going to delete this record from database. This process
                                                         can not be undone.</p>
                                                 </div>
@@ -183,9 +188,10 @@
                                                     <button type="button" class="btn btn-success" data-dismiss="modal">
                                                         Cancel
                                                     </button>
-                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                                    <a href="{% url 'delete-transfer-stock' stock_transfer_no=item.stock_transfer_no %}"
+                                                       class="btn btn-danger">
                                                         Delete
-                                                    </button>
+                                                    </a>
                                                 </div>
                                             </div>
 
@@ -217,7 +223,6 @@
 </div>
 
 
-
 <script>
 $(document).ready(function() {
     $('#dataTable').DataTable({
@@ -227,7 +232,7 @@ $(document).ready(function() {
         order: [[ 0, 'desc' ]],
     });
 });
-</script>
 
+</script>
 
 {% endblock content %}

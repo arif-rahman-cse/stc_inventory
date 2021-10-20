@@ -47,11 +47,11 @@
 
                         <div class="row">
 
-                             <div class="col">
-                                    <div class="form-group">
-                                        {{ lc_form.file_no|as_crispy_field }}
-                                    </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    {{ lc_form.file_no|as_crispy_field }}
                                 </div>
+                            </div>
 
                             <div class="col">
                                 <div class="form-group">
@@ -111,6 +111,7 @@
                                 <th style="text-align:center">Product Name</th>
                                 <th style="text-align:center">File No</th>
                                 <th style="text-align:center">Qty</th>
+                                <th style="text-align:center">Unit cost</th>
                                 <th style="text-align:center">T.Amount</th>
                                 <th style="text-align:center">Status</th>
                                 <th style="text-align:center">Action</th>
@@ -125,14 +126,15 @@
                                 <td style="text-align:center">{{item.product}}</td>
                                 <td style="text-align:center">{{item.file_no}}</td>
                                 <td style="text-align:center">{{item.quantity}}</td>
+                                <td style="text-align:center">{{item.lc_unit_cost_tk}}</td>
                                 <td style="text-align:center">{{item.total_amount_tk}}</td>
                                 <td style="text-align:center">
                                     {% if item.status == "Open" %}
                                     <button type="button" class="btn btn-danger" data-toggle="modal"
-                                            data-target="#processmodal{{item.id}}">{{item.status}}
+                                            data-target="#processmodal{{item.lc_transaction_no}}">{{item.status}}
                                     </button>
 
-                                    <div class="modal fade" id="processmodal{{item.id}}" role="dialog">
+                                    <div class="modal fade" id="processmodal{{item.lc_transaction_no}}" role="dialog">
                                         <div class="modal-dialog">
 
                                             <!-- Modal content-->
@@ -143,7 +145,7 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <p>Fie No:{{item.file_no}}</p>
+                                                    <h5 class="p-2">Fie No:{{item.file_no}}</h5>
                                                     <p>You are going to Process this LC.This process can not be
                                                         undone.</p>
                                                 </div>
@@ -151,7 +153,7 @@
                                                     <button type="button" class="btn btn-danger" data-dismiss="modal">
                                                         Cancel
                                                     </button>
-                                                    <a href="/sales/chl_to_inventory/{{item.xchlnum}}"
+                                                    <a href="{% url 'new-lc-process' lc_transaction_no=item.lc_transaction_no %}"
                                                        class="btn btn-primary">Process LC</a>
                                                 </div>
                                             </div>
@@ -160,15 +162,14 @@
                                     </div>
 
                                     {% elif item.status == "Process" %}
+
                                     <a>
                                         <button class="btn btn-warning" data-toggle="modal"
-                                                data-target="#closemodal{{item.id}}">{{item.status}}
+                                                data-target="#closemodal{{item.lc_transaction_no}}">{{item.status}}
                                         </button>
                                     </a>
-
-                                    <div class="modal fade" id="closemodal{{item.id}}" role="dialog">
+                                    <div class="modal fade" id="closemodal{{item.lc_transaction_no}}" role="dialog">
                                         <div class="modal-dialog">
-
                                             <!-- Modal content-->
                                             <div class="modal-content">
                                                 <div class="modal-header">
@@ -177,21 +178,37 @@
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <p>Fie No:{{item.file_no}}</p>
-                                                    <p>You are going to Closed this LC.This process can not be
+                                                    <h5 class="p-2">Fie No:{{item.file_no}}</h5>
+                                                    <p>You are going to Close this LC.This process can not be
                                                         undone.</p>
+
+                                                    <div class="col">
+                                                        <div class="form-group">
+                                                            <label for="exampleFormControlInput1">Select Warehouse
+                                                                Name </label>
+                                                            <select name="warehouse_name"
+                                                                    class="warehouse_name form-control disabled-results"
+                                                                    url="{%url 'get-warehouse-name' %}">
+                                                            </select>
+                                                        </div>
+                                                    </div>
+
+
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                                    <button type="button" class="btn btn-danger"
+                                                            data-dismiss="modal">
                                                         Cancel
                                                     </button>
-                                                    <a href="/sales/chl_to_inventory/{{item.xchlnum}}"
+                                                    <a id="closed_lc_id"
+                                                       href="{% url 'new-lc-closed' lc_transaction_no=item.lc_transaction_no %}"
                                                        class="btn btn-primary">Closed LC</a>
                                                 </div>
                                             </div>
 
                                         </div>
                                     </div>
+
 
                                     {% else %}
                                     <a>
@@ -200,45 +217,48 @@
                                     {% endif %}
 
                                 </td>
+
                                 <td style="text-align:center">
-
-
+                                    {% if item.status == "Closed" %}
+                                    <button class="btn btn-outline-info"><i class="fa fa-eye"></i></button>
+                                    {% else %}
                                     <a href="#">
                                         <button class="btn btn-outline-info"><i class="fa fa-edit"></i></button>
                                     </a>
-                                    <button class="btn btn-outline-danger" data-toggle="modal" data-target="#postmodal">
-                                        <i
-                                                class="fa fa-trash"></i></button>
+                                    <button class="btn btn-outline-danger" data-toggle="modal"
+                                            data-target="#postmodal{{item.lc_transaction_no}}">
+                                        <i class="fa fa-trash"></i></button>
 
-                                    <div class="modal fade" id="postmodal" role="dialog">
+                                    <div class="modal fade" id="postmodal{{item.lc_transaction_no}}" role="dialog">
                                         <div class="modal-dialog">
 
                                             <!-- Modal content-->
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h4 class="modal-title">Delete Customer</h4>
+                                                    <h4 class="modal-title">Delete LC</h4>
                                                     <button type="button" class="close" data-dismiss="modal">&times;
                                                     </button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <h5>Test Customer</h5>
-                                                    <h6 class="p-2">CUS-00001</h6>
-                                                    <p>You are going to delete this employee from database. This process
-                                                        can not be
-                                                        undone.</p>
+                                                    <h5>Fie No:{{item.file_no}}</h5>
+                                                    <h6 class="p-2">Qty: {{item.quantity}}</h6>
+                                                    <p>You are going to delete this LC from database. This process
+                                                        can not be undone.</p>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-success" data-dismiss="modal">
                                                         Cancel
                                                     </button>
-                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">
-                                                        Delete
-                                                    </button>
+                                                    <a href="{% url 'new-lc-delete' lc_transaction_no=item.lc_transaction_no %}"
+                                                       class="btn btn-danger">Delete
+                                                    </a>
                                                 </div>
                                             </div>
 
                                         </div>
                                     </div>
+                                    {% endif %}
+
 
                                 </td>
 
@@ -261,6 +281,8 @@
 
 </div>
 
+<script src="{% static 'assets/js/warehouse_list.js' %}" type="text/javascript"></script>
+
 <script>
 $(document).ready(function() {
     $('#dataTable').DataTable({
@@ -270,6 +292,16 @@ $(document).ready(function() {
         order: [[ 0, 'desc' ]],
     });
 });
+
+
+
+
+
+
+
+
+
+
 
 </script>
 

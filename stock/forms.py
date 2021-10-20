@@ -1,5 +1,6 @@
 from django import forms
 
+from setup_data.models import Warehouse
 from stock.models import LC, Stock, StockTransfer
 
 
@@ -73,3 +74,16 @@ class StockTransferFrom(forms.ModelForm):
                                                        attrs={'required': True, 'class': 'form-control',
                                                               'type': 'date'}),
         }
+
+
+class WarehouseFrom(forms.ModelForm):
+    class Meta:
+        model = Warehouse
+        fields = (
+            'warehouse_name',)
+        widgets = {
+            'warehouse_name': forms.Select(choices=Warehouse.objects.all().values_list('warehouse_name',
+                                                                                       'warehouse_name'),
+                                           attrs={'class': 'form-control', }),
+        }
+        labels = {'warehouse_name': 'Select Warehouse Name', }

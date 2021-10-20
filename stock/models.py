@@ -4,10 +4,38 @@ import datetime
 from setup_data.models import Products, Warehouse
 
 
+def lc_transaction_no():
+    # GET Current Date
+    today = datetime.date.today()
+
+    # Format the date like (20-11 YY-MM)
+    # Capital #Y means year including the century and small %y means  year without a century (range 00 to 99)
+    today_string = today.strftime('%Y%m')
+
+    # For the very first time invoice_number is YY-MM-DD-001
+    next_invoice_number = '00001'
+
+    # Get Last Invoice Number of Current Year, Month and Day (20-11-28 YY-MM-DD)
+    last_invoice = LC.objects.filter(lc_transaction_no__startswith=today_string).order_by('lc_transaction_no').last()
+
+    if last_invoice:
+        # Cut 4 digit from the left and converted to int (2011:xxx)
+        last_invoice_number = int(last_invoice.lc_transaction_no[6:])
+
+        # Increment one with last six digit
+        next_invoice_number = '{0:05d}'.format(last_invoice_number + 1)
+
+    # Return custom invoice number
+    return today_string + next_invoice_number
+
+
 class LC(models.Model):
+    lc_transaction_no = models.CharField(max_length=100, primary_key=True, default=lc_transaction_no)
     created_at = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     updated_at = models.DateTimeField(blank=True, null=True, auto_now=True)
     lc_date = models.DateField(blank=True, null=True)
+    lc_process_date = models.DateField(blank=True, null=True)
+    lc_close_date = models.DateField(blank=True, null=True)
     quantity = models.DecimalField(max_digits=20, decimal_places=2)
     product = models.ForeignKey(Products, on_delete=models.DO_NOTHING, )
     file_no = models.CharField(max_length=100)

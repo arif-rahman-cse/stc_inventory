@@ -1,23 +1,30 @@
+import datetime
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Sum, F
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-# Create your views here.
 from django.views.generic import ListView
+from rest_framework.generics import ListAPIView
 
-from stock.forms import LcCreateForm, StockCreateForm, StockTransferFrom
+from setup_data.models import Warehouse
+from stock.forms import LcCreateForm, StockCreateForm, StockTransferFrom, WarehouseFrom
 from stock.models import LC, Stock, StockTransfer, StockPrime
+from stock.serializers import WarehouseSerializer
+from rest_framework.response import Response
 
 
 @login_required
 def add_new_lc(request):
     template_name = 'stock/new_lc.html'
     lc_list = LC.objects.all().order_by('-lc_date', '-updated_at')
+    warehouse_list = Warehouse.objects.all().order_by('warehouse_name', )
 
     if request.method == 'GET':
         lc_form = LcCreateForm(request.GET or None)
+        warehouse_form = WarehouseFrom(request.GET or None)
 
     elif request.method == 'POST':
         lc_form = LcCreateForm(request.POST)
@@ -40,6 +47,8 @@ def add_new_lc(request):
         'title': 'New LC',
         'nav_bar': 'new_lc',
         'lcs': lc_list,
+        'warehouses': warehouse_list,
+        'warehouse_form': warehouse_form,
     })
 
 
@@ -105,6 +114,21 @@ class StockInListView(LoginRequiredMixin, ListView, ):
         return context
 
 
+class StockedProductListView(LoginRequiredMixin, ListView, ):
+    model = Stock  # Model I want to Covert to List
+    template_name = 'stock/stocked_product_list.html'  # Template Name
+    context_object_name = 'stocks'  # Change default name of objectList
+    ordering = ['-stock_in_date', '-updated_at']  # Ordering post LIFO
+    paginate_by = 10  # number of page I want to show in single page
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Stocked Product"
+        context["nav_bar"] = "stocked_product"
+        context['stock_list'] = self.model.objects.all()
+        return context
+
+
 @login_required
 def transfer_stock(request):
     transfer_stock_list = StockTransfer.objects.all().order_by('-stock_transfer_date', '-updated_at')
@@ -163,7 +187,7 @@ def transfer_stock_confirm(request, stock_transfer_no):
         send_to_stock_issue.type = "Issue"
         send_to_stock_issue.stock_transaction_type = "TRF"
         send_to_stock_issue.sign = -1
-        send_to_stock_issue.author = trans_stock.author
+        send_to_stock_issue.author = request.user
         send_to_stock_issue.is_active = True
         send_to_stock_issue.save()
 
@@ -178,12 +202,13 @@ def transfer_stock_confirm(request, stock_transfer_no):
         send_to_stock_receipt.type = "Receipt"
         send_to_stock_receipt.stock_transaction_type = "TRF"
         send_to_stock_receipt.sign = 1
-        send_to_stock_receipt.author = trans_stock.author
+        send_to_stock_receipt.author = request.user
         send_to_stock_receipt.is_active = True
         send_to_stock_receipt.save()
 
         # Update Transfer  Status
         trans_stock.status = "Transferred"
+        trans_stock.save()
         messages.add_message(request, messages.SUCCESS, 'Stock Transfer Successful !')
 
     else:
@@ -204,9 +229,12 @@ def transferable_stock_qty(request):
         if product_id and warehouse_id:
             transferable_qty = StockPrime.objects.filter(warehouse=warehouse_id, product=product_id).aggregate(
                 total_qty=Sum(F('quantity') * F('sign')))
-            print("Total Qty")
-            print(transferable_qty)
+
             transferable_qty = transferable_qty.get('total_qty')
+            if transferable_qty:
+                transferable_qty = transferable_qty
+            else:
+                transferable_qty = 0
         else:
             transferable_qty = 0
 
@@ -214,3 +242,91 @@ def transferable_stock_qty(request):
             "transferable_qty": transferable_qty,
         }
         return JsonResponse(data, status=200)
+
+
+@login_required
+def delete_transfer_stock(request, stock_transfer_no):
+    if request.method == 'GET':
+        instance = StockTransfer.objects.get(stock_transfer_no=stock_transfer_no)
+        instance.delete()
+        messages.add_message(request, messages.WARNING, 'Transfer Stick record delete Successful!')
+        return redirect('transfer-stock')
+
+
+@login_required
+def new_lc_process(request, lc_transaction_no):
+    if request.method == 'GET':
+        instance = LC.objects.get(lc_transaction_no=lc_transaction_no)
+        instance.status = "Process"
+        instance.save()
+        messages.add_message(request, messages.WARNING, 'LC Process Successful')
+        return redirect('new-lc')
+
+
+@login_required
+def new_lc_closed(request, lc_transaction_no):
+    if request.method == 'GET':
+        warehouse_name = request.GET.get('warehouse_name', None)
+        lc_instance = LC.objects.get(lc_transaction_no=lc_transaction_no)
+        print("Warehouse Name")
+        print(warehouse_name)
+        # Transfer to stock Receipt
+        send_to_stock_receipt = StockPrime()
+        send_to_stock_receipt.ref_number = lc_instance.lc_transaction_no
+        send_to_stock_receipt.stock_in_date = datetime.date.today()
+        send_to_stock_receipt.product = lc_instance.product
+        send_to_stock_receipt.warehouse = Warehouse.objects.get(id=1)
+        send_to_stock_receipt.quantity = lc_instance.quantity
+        send_to_stock_receipt.total_amount_tk = lc_instance.total_amount_tk
+        send_to_stock_receipt.type = "Receipt"
+        send_to_stock_receipt.stock_transaction_type = "LC"
+        send_to_stock_receipt.sign = 1
+        send_to_stock_receipt.author = request.user
+        send_to_stock_receipt.is_active = True
+        send_to_stock_receipt.save()
+
+        # Update LC Status
+        lc_instance.status = "Closed"
+        lc_instance.save()
+
+    messages.add_message(request, messages.SUCCESS, 'LC Closed Successful')
+    return redirect('new-lc')
+
+
+@login_required
+def new_lc_delete(request, lc_transaction_no):
+    if request.method == 'GET':
+        instance = LC.objects.get(lc_transaction_no=lc_transaction_no)
+        instance.delete()
+        messages.add_message(request, messages.WARNING, 'LC Delete Successful')
+        return redirect('new-lc')
+
+
+@login_required
+def get_warehouse_name(request):
+    if request.method == "GET" and request.is_ajax():
+        print("Get Warehouse Called")
+        # Get User ID of specific business
+        # access = Profile.objects.get(user=request.user.id).access
+        # print(access)
+        # # Get Name of user
+        warehouses = Warehouse.objects.all()
+        print(warehouses)
+        serializer = WarehouseSerializer(warehouses, many=True)
+        print(serializer.data)
+        return Response(serializer.data)
+        #
+        # data = {
+        #     "warehouses": warehouses,
+        # }
+        # return JsonResponse(data, status=200)
+
+
+class WarehouseList(LoginRequiredMixin, ListAPIView):
+    serializer_class = WarehouseSerializer
+
+    def get_queryset(self):
+        print("-------- Warehouse List ---------")
+        queryset = Warehouse.objects.all().order_by('warehouse_name', )
+        print(queryset)
+        return queryset

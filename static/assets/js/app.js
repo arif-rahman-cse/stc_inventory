@@ -242,6 +242,7 @@ var App = function() {
         }
     }
 
+
     function hideErrorMessage() {
             // suppose the `id` attribute of element is `message_container`.
             var message_ele = document.getElementById("error_message_id");

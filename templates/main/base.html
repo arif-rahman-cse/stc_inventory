@@ -247,7 +247,7 @@
                             </svg>
                         </div>
                     </a>
-                    <ul class="collapse submenu list-unstyled {% if nav_bar == 'stock_in_list' or nav_bar == 'new_lc' or nav_bar == 'add_stock' or nav_bar == 'transfer_stock' %} show {% endif %}"
+                    <ul class="collapse submenu list-unstyled {% if nav_bar == 'stock_in_list' or nav_bar == 'new_lc' or nav_bar == 'add_stock' or nav_bar == 'transfer_stock' or nav_bar == 'stocked_product' %} show {% endif %}"
                         id="stock" data-parent="#accordionExample">
 
                         <li class="{% if nav_bar == 'add_stock' %} active {% endif %}">
@@ -261,6 +261,9 @@
                         </li>
                         <li class="{% if nav_bar == 'new_lc' %} active {% endif %}">
                             <a href="{% url 'new-lc' %}">New LC</a>
+                        </li>
+                         <li class="{% if nav_bar == 'stocked_product' %} active {% endif %}">
+                            <a href="{% url 'stocked-product-list' %}">Stocked Product</a>
                         </li>
                     </ul>
                 </li>
