@@ -20,7 +20,6 @@ from rest_framework.response import Response
 def add_new_lc(request):
     template_name = 'stock/new_lc.html'
     lc_list = LC.objects.all().order_by('-lc_date', '-updated_at')
-    warehouse_list = Warehouse.objects.all().order_by('warehouse_name', )
 
     if request.method == 'GET':
         lc_form = LcCreateForm(request.GET or None)
@@ -47,7 +46,6 @@ def add_new_lc(request):
         'title': 'New LC',
         'nav_bar': 'new_lc',
         'lcs': lc_list,
-        'warehouses': warehouse_list,
         'warehouse_form': warehouse_form,
     })
 

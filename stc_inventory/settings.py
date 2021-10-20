@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'main_app',
     'setup_data',
     'stock',
-    'order',
+    'sales',
 
     # Others App
     'crispy_forms',

@@ -22,7 +22,7 @@ urlpatterns = [
     path('', include('main_app.urls')),
     path('setup/', include('setup_data.urls')),
     path('stock/', include('stock.urls')),
-    path('order/', include('order.urls')),
+    path('sales/', include('sales.urls')),
 
     # User Credential url
     path('login/', auth_views.LoginView.as_view(template_name='auth/login.html'), name='login'),
