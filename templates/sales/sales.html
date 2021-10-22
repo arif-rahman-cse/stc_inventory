@@ -15,7 +15,7 @@
 
                 <div class="mb-1 col-lg-4">
 
-                    <a href="{% url 'add-stock' %}" class="btn btn-primary float-right">Add Order (+)</a>
+                    <a href="{% url 'new-sales' %}" class="btn btn-primary float-right">New Sales (+)</a>
                 </div>
 
             </div>
@@ -28,7 +28,6 @@
                     <th class="text-center">Date</th>
                     <th class="text-center">Bill No</th>
                     <th class="text-center">Customer</th>
-                    <th class="text-center">Phone</th>
                     <th class="text-center">Qty</th>
                     <th class="text-center">Total Amount</th>
                     <th class="text-center">Paid</th>
@@ -40,21 +39,109 @@
                 </thead>
                 <tbody>
 
+                {% for item in sales %}
                 <tr>
-                    <td class="text-center">10/12/2020</td>
-                    <td class="text-center">STC001</td>
-                    <td class="text-center">BS tds</td>
-                    <td class="text-center">01914503351</td>
-                    <td class="text-center">100</td>
-                    <td class="text-center">50780</td>
-                    <td class="text-center">50780</td>
-                    <td class="text-center">0</td>
-                    <td class="text-center">Paid</td>
-                    <td class="text-center">
-                        <a href="#" class="btn btn-outline-info"><i class="fa fa-edit"></i></a>
-                        <a href="#" class="btn btn-outline-danger"><i class="fa fa-trash"></i></a>
+                    <td class="text-center">{{item.order_date}}</td>
+                    <td class="text-center">{{item.invoice_no}}</td>
+                    <td class="text-center">{{item.customer}}</td>
+                    <td class="text-center">{{item.quantity}}</td>
+                    <td class="text-center">{{item.total_amount}}</td>
+                    <td class="text-center">{{item.paid_amount}}</td>
+                    <td class="text-center">{{item.due_amount}}</td>
+                    <td class="text-align:center">
+
+                        {% if item.status == "Open" %}
+                        <button type="button" class="modal-popup btn btn-danger"
+                                data-qty={{item.quantity}}
+                                data-toggle="modal" data-target="#postmodal{{item.invoice_no}}">
+                            {{item.status}}
+                        </button>
+
+                        <div class="modal fade" id="postmodal{{item.invoice_no}}" role="dialog">
+                            <div class="modal-dialog">
+
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Post Sales </h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h5 id="transfer_qty" class="text-center p-2">Sales Qty: {{item.quantity}}</h5>
+                                        <p>You are going to post this sales qty. This process can not be
+                                            undone.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="{% url 'transfer-stock-confirm' invoice_no=item.invoice_no %}"
+                                           class="btn btn-primary">Post</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {% else %}
+                        <a>
+                            <button class="btn btn-success">{{item.status}}</button>
+                        </a>
+                        {% endif %}
+
                     </td>
+
+
+                    <td class="text-center">
+                        {% if item.status == "Open" %}
+
+                        <a href="#" >
+                            <button class="btn btn-outline-info"><i class="fa fa-edit"></i></button>
+                        </a>
+
+                        <a href="#" >
+                            <button class="btn btn-outline-danger"><i class="fa fa-trash"></i></button>
+                        </a>
+
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-outline-info" data-toggle="modal"
+                                data-target="#exampleModal" id="{{item.invoice_no}}" onclick="sales_list(this.id)" ;>
+                            <i class="fa fa-eye"></i>
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                             aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-xl" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header text-center">
+
+                                        <h5 class="modal-title w-100" id="exampleModalLabel">Item List</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+
+                                    <div class="modal-body" id="bomlistdivid">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% else %}
+
+                        <a href="#"><button class="btn btn-outline-info">Bill</button></a>
+                        <a href="{% url 'print-challan'%}" target="_blank"><button class="btn btn-outline-info">Challan</button></a>
+
+                        {% endif %}
+
+                    </td>
+
                 </tr>
+
+                {% endfor %}
 
                 </tbody>
             </table>
@@ -74,6 +161,89 @@ $(document).ready(function() {
     });
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
+
+<!--list expand Start-->
+<script>
+    function sales_list(invoice_no){
+        var invoice_no=invoice_no
+        var req = new XMLHttpRequest();
+        var url = 'sales_item_popup?invoice_no='+invoice_no;
+        var req = new XMLHttpRequest();
+        req.onreadystatechange = function(){
+            if (this.readyState == 4 && this.status == 200){
+               var data = eval(req.responseText);
+               var div  = document.getElementById('bomlistdivid');
+               div.innerHTML = "";
+
+               var table = document.createElement('TABLE');
+
+
+               var row = table.insertRow(0);
+                var product = row.insertCell(0);
+                var quantity = row.insertCell(1);
+                var price = row.insertCell(2);
+                var amount = row.insertCell(3);
+
+                product.innerHTML = "Item Name";
+                quantity.innerHTML = "Quantity";
+                price.innerHTML = "Price";
+                amount.innerHTML = "Amount";
+
+               for (var i = 0; i<data.length; i++){
+                var row = table.insertRow(i+1);
+                var product = row.insertCell(0);
+                var quantity = row.insertCell(1);
+                var price = row.insertCell(2);
+                var amount = row.insertCell(3);
+
+                product.innerHTML = data[i].product;
+                quantity.innerHTML = data[i].quantity;
+                price.innerHTML = data[i].price;
+                amount.innerHTML = data[i].amount;
+
+               }
+               table.className = 'table text-center table-striped table-hover'
+               div.appendChild(table);
+
+               }
+            };
+        req.open("GET" ,url , true);
+        req.send();
+     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</script>
+<!--list expand Start-->
 
 {% endblock content %}

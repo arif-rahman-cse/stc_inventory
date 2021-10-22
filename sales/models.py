@@ -38,9 +38,11 @@ class SalesParent(models.Model):
     address = models.CharField(max_length=200, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     warehouse = models.ForeignKey(Warehouse, on_delete=models.DO_NOTHING, )
+    quantity = models.DecimalField(max_digits=20, decimal_places=2, )
     total_amount = models.DecimalField(max_digits=20, decimal_places=2)
     paid_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
     due_amount = models.DecimalField(max_digits=20, decimal_places=2, default=0.0)
+    status = models.CharField(max_length=20, default="Open")
     author = models.ForeignKey(User, on_delete=models.DO_NOTHING, )
     is_active = models.BooleanField(default=True)
 
@@ -57,7 +59,7 @@ class SalesChild(models.Model):
     price = models.DecimalField(max_digits=20, decimal_places=2)
     amount = models.DecimalField(max_digits=20, decimal_places=2)
     invoice_no = models.ForeignKey(SalesParent, on_delete=models.DO_NOTHING, )
-    author = models.ForeignKey(User, on_delete=models.DO_NOTHING, )
+    author = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     is_active = models.BooleanField(default=True)
 
     def __str__(self):

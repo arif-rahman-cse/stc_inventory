@@ -1,0 +1,169 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Challan</title>
+    <link rel="stylesheet" href="{% static 'assets/css/table.css' %}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+    table {
+  font-family: "Helvetica Neue", Helvetica, sans-serif
+}
+table {
+
+  margin: auto;
+  width: 1000px;
+  height: 250px;
+  border-collapse: collapse;
+}
+
+thead {
+  background: white;
+  color: Black;
+
+}
+
+th,td {
+  padding: 5px 10px;
+    border: 20px #1c87c9;
+    border-right: 1px solid Black;
+    border-bottom: 1px solid Black;
+    border-left: 1px solid black;
+    border-top: 1px solid black;
+}
+
+tbody tr:nth-child(even) {
+  background: WhiteSmoke;
+
+}
+tbody tr td:nth-child(2) {
+  text-align:center;
+}
+tbody tr td:nth-child(3), tbody tr td:nth-child(4) {
+  text-align: right;
+  font-family: monospace;
+
+}
+
+tfoot {
+  background: white;
+  color: black;
+  text-align: right;
+    border-top: 1px solid Black;
+}
+
+tfoot tr th:last-child {
+  font-family: monospace;
+
+}
+
+
+
+.center {
+  margin: auto;
+  width: 80px;
+  height: 25px;
+  border: 1px solid blue;
+  text-align:center;
+  font-weight: bold;
+}
+.rotate {
+  width: 80px;
+  height: 20px;
+  border: 1px solid blue;
+  text-align:center;
+  font-weight: bold;
+    transform: rotate(-90deg);
+    margin-left:9em;
+    margin-top:2em;
+    background-color: blue;
+    color: white;
+}
+
+.right {
+  position: absolute;
+  right: 0px;
+  width: 300px;
+  height: 20px;
+}
+
+
+
+
+
+
+    </style>
+</head>
+<body>
+<div id="content" class="col-xl-12 col-md-12 col-sm-12 col-12">
+    <img src="{% static 'assets/img/sopno.jpg' %}" alt="logo"/ style="width:600px;
+    margin-left:13em;margin-left:22.5em;">
+    <p style="color:black;text-align:center">42/2 M.H. Mansion(1st Floor), Sayed Awlad Hossain Lane, Islampur,
+        Dhaka-1100, Bangladesh</p>
+    <p style="color:black;text-align:center">Tel:+88-02-57396327, Mobile: 01714-070782, Email:office@stchaque.com</p>
+    <p style="color:blue;text-align:center">Web: www.stchaque.com</p>
+
+    <div class="center">CHALLAN</div>
+    <div class="right">
+        <p>Date:</p>
+        <p>Bill no:</p>
+    </div>
+
+    <p style="margin-left:10.5em">Challan no:</p>
+    <p style="margin-left:10.5em">Name:</p>
+    <p style="margin-left:10.5em">Address:</p>
+
+    <table>
+        <thead>
+        <tr>
+            <th width="50px">Sl. No.</th>
+            <th>Description of goods</th>
+            <th>Packing</th>
+            <th>Unit / Kgs</th>
+            <th>Quantity</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td></td>
+            <td style="background-image: url('assets/img/4.png'); background-repeat:no-repeat;background-size:350px 100px; line-height: 800px; background-position:center; opacity:20%;"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="3" style="text-align: left;">E-BIN : 000375491, TIN NO : 581652956498</th>
+            <th>Total</th>
+            <th style="background-color:#d8d4de;"></th>
+        </tr>
+        </tfoot>
+    </table>
+
+    <p style="margin-left:10.5em">Taka (in Words):</p>
+    <div class="rotate">Condition</div>
+    <p style="margin-left:13em; margin-top:-2.6em; Width: 800px">*All The Goods Mentioned In this Invoice Are Correct
+        and Equal And I have Signed.</p>
+    <p style="margin-left:13em; Width: 1000px">*The Products Sold Will Not Be Refunded.</p>
+
+
+    <div class="container" style="margin-left: 9em; margin-top:3em;">
+        <div class="row">
+            <div class="col-sm-4">
+                <p style="text-decoration: overline;">Receiver's Signature</p>
+            </div>
+            <div class="col-sm-4">
+                <p style="text-decoration: overline;">Delivery By</p>
+            </div>
+            <div class="col-sm-3.5">
+                <p style="text-decoration: overline;">For: <b>Shopno Trading Corporation</b>></p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
