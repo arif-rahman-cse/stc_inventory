@@ -133,7 +133,7 @@
                         {% else %}
 
                         <a href="#"><button class="btn btn-outline-info">Bill</button></a>
-                        <a href="{% url 'print-challan'%}" target="_blank"><button class="btn btn-outline-info">Challan</button></a>
+                        <a href="{% url 'print-challan' invoice_no=item.invoice_no %}" target="_blank"><button class="btn btn-outline-info">Challan</button></a>
 
                         {% endif %}
 

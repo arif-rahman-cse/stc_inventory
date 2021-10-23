@@ -1,8 +1,11 @@
 from datetime import datetime
+from multiprocessing import Value
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Sum, F, FloatField
+from django.db.models.functions import Coalesce
 from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -113,11 +116,18 @@ def sales_post(request, invoice_no):
 
 
 @login_required
-def print_challan(request):
-    template_name = 'sales/challan_print.html'
+def print_challan(request, invoice_no):
+    print(invoice_no)
+    sales_child = SalesChild.objects.filter(invoice_no=invoice_no)
+
+    total_amount = sales_child.aggregate(Sum('amount'))
+    print(total_amount)
+
     context = {
         'title': "Daily Attendants Sheet",
         'nav_bar': "report_nav",
+        'sales_item': sales_child,
+        'total_tk': total_amount.get('amount__sum'),
     }
     pdf = render_to_pdf('sales/bill_print.html', context)
     return HttpResponse(pdf, content_type='application/pdf')
