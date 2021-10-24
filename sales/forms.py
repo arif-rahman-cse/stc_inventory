@@ -40,6 +40,9 @@ class SalesChildFormCreateForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['product'].queryset = Products.objects.filter(is_active=True)
+        self.fields['product'].widget.attrs.update(
+            {'class': 'textinput form-control setprice product', 'min': '0', 'required': 'true'})
+
         self.fields['quantity'].widget.attrs.update(
             {'class': 'textinput form-control setprice quantity', 'min': '0', 'required': 'true'})
         self.fields['price'].widget.attrs.update(

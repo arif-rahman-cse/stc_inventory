@@ -4,7 +4,6 @@
 {% block content %}
 
 <div class="col-lg-12 p-4">
-    <div class="container">
         <div class="row">
             <div class="col-lg-12 col-12 layout-spacing">
                 <div class="statbox widget box box-shadow">
@@ -73,11 +72,18 @@
                                     <div class="panel-body">
                                         {% for iform in formset %}
                                         <div class="row form-row">
-                                            <div class="form-group col-md-5">
+                                            <div class="form-group col-md-3">
                                                 {{ iform.stock.errors }}
                                                 <label class="panel-body-text">Product:</label>
                                                 {{ iform.product }}
                                             </div>
+
+                                            <div class="form-group col-md-2">
+                                                <label for="exampleFormControlInput1">Available Stock</label>
+                                                <input class="textinput form-control setprice stock-qty" type="number" id="id_transferable_stock_qty"
+                                                       readonly>
+                                            </div>
+
                                             <div class="form-group col-md-2">
                                                 {{ iform.quantity.errors }}
                                                 <label class="panel-body-text">Quantity</label>
@@ -91,12 +97,12 @@
                                             <div class="form-group col-md-2">
                                                 <label class="panel-body-text">Price</label>
                                                 {{ iform.amount }}
-<!--                                                <input type="text" class="textinput form-control totalprice" value="1"-->
-<!--                                                       disabled required>-->
+
                                             </div>
                                             <div class="form-group col-md-1">
                                                 <label class="panel-body-text" style="color: #FFF">.</label>
-                                                <button class="form-control btn btn-danger remove-form-row" id="id_remove_form_button">-</button>
+                                                <button class="form-control btn btn-danger remove-form-row"
+                                                        id="id_remove_form_button">x</button>
                                             </div>
                                         </div>
                                         {% endfor %}
@@ -111,7 +117,7 @@
 
                                                 <div class="row mb-4">
 
-                                                     <div class="col">
+                                                    <div class="col">
                                                         <div class="form-group">
                                                             {{ sales_form.quantity|as_crispy_field }}
                                                         </div>
@@ -145,7 +151,7 @@
                                 </div>
 
                                 <div class="text-center">
-                                     <button type="submit" class="btn btn-primary ">New Sales</button>
+                                    <button type="submit" class="btn btn-primary ">New Sales</button>
                                 </div>
 
                             </div>
@@ -159,7 +165,6 @@
             </div>
         </div>
 
-    </div>
 </div>
 
 <script src="{% static 'assets/js/new_sales.js' %}" type="text/javascript"></script>

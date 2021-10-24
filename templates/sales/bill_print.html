@@ -1,57 +1,87 @@
-
 <div class="center" style="text-align: left;">
-<table style="height: 18px; width: 100%; border-collapse: collapse; border-style: hidden;" border="0">
-<tbody>
-<tr style="height: 18px; border-style: hidden;">
-<td style="width: 75.7668%; height: 18px; border-style: hidden;"><strong>Bill no:</strong></td>
-<td style="width: 24.2332%; height: 18px;"><strong>Date:</strong></td>
-</tr>
-</tbody>
-</table>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <table style="height: 18px; width: 100%; border-collapse: collapse; border-style: hidden;" border="0">
+        <tbody>
+        <tr style="height: 18px; border-style: hidden;">
+            <td style="width: 75.7668%; height: 18px; border-style: hidden;"><strong>Bill no:</strong></td>
+            <td style="width: 24.2332%; height: 18px;"><strong>Date: {{challan_info.order_date}}</strong></td>
+        </tr>
+        </tbody>
+    </table>
 </div>
 <div class="center" style="text-align: left;">
-<table style="height: 18px; width: 100%; border-collapse: collapse;" border="0">
-<tbody>
-<tr style="height: 18px; border-style: hidden;">
-<td style="width: 75.7668%; height: 18px;"><strong>Name:</strong></td>
-<td style="width: 24.2332%; height: 18px; border-style: hidden;"><strong>Challan no:</strong></td>
-</tr>
-</tbody>
-</table>
-<strong>Address:</strong></div>
+    <table style="height: 18px; width: 100%; border-collapse: collapse;" border="0">
+        <tbody>
+        <tr style="height: 18px; border-style: hidden;">
+            <td style="width: 75.7668%; height: 18px;"><strong>Name: {{challan_info.customer}}</strong></td>
+            <td style="width: 24.2332%; height: 18px; border-style: hidden;"><strong>Challan no:
+                {{challan_info.invoice_no}}</strong></td>
+        </tr>
+        </tbody>
+    </table>
+    <strong>Address: {{challan_info.address}}</strong></div>
 <div class="center" style="text-align: left;">&nbsp;</div>
-<div class="center" style="text-align: left;">&nbsp;</div>
+
 <div class="center" style="text-align: left;">
-<table style="height: 98px; width: 100%; border-collapse: collapse; margin-left: auto; margin-right: auto;" border="1" cellspacing="2" cellpadding="2">
-<tbody>
-<tr style="height: 18px;">
-<td style="width: 11.82%; height: 43px; text-align: center;">Sl. No.</td>
-<td style="width: 34.1105%; height: 43px; text-align: center;">Description of goods</td>
-<td style="width: 14.4785%; height: 43px; text-align: center;">Qty</td>
-<td style="width: 16.5235%; height: 43px; text-align: center;">Unit Price</td>
-<td style="width: 23.0675%; height: 43px; text-align: center;">Amount of Tk.</td>
-</tr>
+    <table style="height: 98px; width: 100%; border-collapse: collapse; margin-left: auto; margin-right: auto;"
+           border=".5" cellspacing="2" cellpadding="2">
+        <tbody>
+        <tr style="height: 18px;">
+            <td style="width: 11.82%; height: 43px; text-align: center;">Sl. No.</td>
+            <td style="width: 34.1105%; height: 43px; text-align: center;">Description of goods</td>
+            <td style="width: 14.4785%; height: 43px; text-align: center;">Qty</td>
+            <td style="width: 16.5235%; height: 43px; text-align: center;">Unit Price</td>
+            <td style="width: 23.0675%; height: 43px; text-align: center;">Amount of Tk.</td>
+        </tr>
 
 
+        <tr>
+            <td style="width: 11.82%; height: 500px; text-align: center; vertical-align: top;">
 
-{% for item in sales_item %}
-<tr>
-<td style="width: 11.82%; height: 27px; text-align: center;">{{forloop.counter}}</td>
-<td style="width: 34.1105%; height: 27px; text-align: center;" >{{item.product}}</td>
-<td style="width: 14.4785%; height: 27px; text-align: center;" >{{item.quantity}}</td>
-<td style="width: 16.5235%; height: 27px; text-align: center;" >{{item.price}}</td>
-<td style="width: 23.0675%; height: 27px; text-align: center;" >{{item.amount}}</td>
-</tr>
-{% endfor %}
+                {% for item in sales_item %}
+                <p style="padding-top: 25px;">{{forloop.counter}}</p>
+                {% endfor %}
+
+            </td>
+            <td style="width: 34.1105%; height: 500px; text-align: center; vertical-align: top;">
+
+                {% for item in sales_item %}
+                <p style="padding-top: 25px;"> {{item.product}}</p>
+                {% endfor %}
+
+            </td>
+
+            <td style="width: 14.4785%; height: 500px; text-align: center; vertical-align: top;">
+
+                {% for item in sales_item %}
+                <p style="padding-top: 25px;">{{item.quantity}}</p>
+                {% endfor %}
+
+            </td>
+            <td style="width: 16.5235%; height: 500px; text-align: center; vertical-align: top;">
+
+                {% for item in sales_item %}
+                <p style="padding-top: 25px;">{{item.price}}</p>
+                {% endfor %}
+
+            </td>
+            <td style="width: 23.0675%; height: 500px; text-align: center; vertical-align: top;">
+                {% for item in sales_item %}
+                <p style="padding-top: 25px;">{{item.amount}}</p>
+                {% endfor %}
+            </td>
+        </tr>
 
 
-
-
-<tr style="height: 28px;">
-<td style="width: 11.82%; height: 28px;" colspan="3">&nbsp;</td>
-<td style="width: 16.5235%; text-align: center; height: 28px;">Total Tk</td>
-<td style="width: 23.0675%; text-align: center; height: 28px;">{{total_tk}}</td>
-</tr>
-</tbody>
-</table>
+        <tr style="height: 28px;">
+            <td style="width: 11.82%; height: 28px;" colspan="3">&nbsp;</td>
+            <td style="width: 16.5235%; text-align: center; height: 28px;">Total Tk</td>
+            <td style="width: 23.0675%; text-align: center; height: 28px;">{{total_tk}}</td>
+        </tr>
+        </tbody>
+    </table>
+    <h2>Taka (In word): {{total_taka_word}}</h2>
 </div>

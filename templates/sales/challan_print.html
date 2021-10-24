@@ -1,169 +1,87 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Challan</title>
-    <link rel="stylesheet" href="{% static 'assets/css/table.css' %}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <style>
-    table {
-  font-family: "Helvetica Neue", Helvetica, sans-serif
-}
-table {
-
-  margin: auto;
-  width: 1000px;
-  height: 250px;
-  border-collapse: collapse;
-}
-
-thead {
-  background: white;
-  color: Black;
-
-}
-
-th,td {
-  padding: 5px 10px;
-    border: 20px #1c87c9;
-    border-right: 1px solid Black;
-    border-bottom: 1px solid Black;
-    border-left: 1px solid black;
-    border-top: 1px solid black;
-}
-
-tbody tr:nth-child(even) {
-  background: WhiteSmoke;
-
-}
-tbody tr td:nth-child(2) {
-  text-align:center;
-}
-tbody tr td:nth-child(3), tbody tr td:nth-child(4) {
-  text-align: right;
-  font-family: monospace;
-
-}
-
-tfoot {
-  background: white;
-  color: black;
-  text-align: right;
-    border-top: 1px solid Black;
-}
-
-tfoot tr th:last-child {
-  font-family: monospace;
-
-}
-
-
-
-.center {
-  margin: auto;
-  width: 80px;
-  height: 25px;
-  border: 1px solid blue;
-  text-align:center;
-  font-weight: bold;
-}
-.rotate {
-  width: 80px;
-  height: 20px;
-  border: 1px solid blue;
-  text-align:center;
-  font-weight: bold;
-    transform: rotate(-90deg);
-    margin-left:9em;
-    margin-top:2em;
-    background-color: blue;
-    color: white;
-}
-
-.right {
-  position: absolute;
-  right: 0px;
-  width: 300px;
-  height: 20px;
-}
-
-
-
-
-
-
-    </style>
-</head>
-<body>
-<div id="content" class="col-xl-12 col-md-12 col-sm-12 col-12">
-    <img src="{% static 'assets/img/sopno.jpg' %}" alt="logo"/ style="width:600px;
-    margin-left:13em;margin-left:22.5em;">
-    <p style="color:black;text-align:center">42/2 M.H. Mansion(1st Floor), Sayed Awlad Hossain Lane, Islampur,
-        Dhaka-1100, Bangladesh</p>
-    <p style="color:black;text-align:center">Tel:+88-02-57396327, Mobile: 01714-070782, Email:office@stchaque.com</p>
-    <p style="color:blue;text-align:center">Web: www.stchaque.com</p>
-
-    <div class="center">CHALLAN</div>
-    <div class="right">
-        <p>Date:</p>
-        <p>Bill no:</p>
-    </div>
-
-    <p style="margin-left:10.5em">Challan no:</p>
-    <p style="margin-left:10.5em">Name:</p>
-    <p style="margin-left:10.5em">Address:</p>
-
-    <table>
-        <thead>
-        <tr>
-            <th width="50px">Sl. No.</th>
-            <th>Description of goods</th>
-            <th>Packing</th>
-            <th>Unit / Kgs</th>
-            <th>Quantity</th>
-        </tr>
-        </thead>
+<div class="center" style="text-align: left;">
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <table style="height: 18px; width: 100%; border-collapse: collapse; border-style: hidden;" border="0">
         <tbody>
-        <tr>
-            <td></td>
-            <td style="background-image: url('assets/img/4.png'); background-repeat:no-repeat;background-size:350px 100px; line-height: 800px; background-position:center; opacity:20%;"></td>
-            <td></td>
-            <td></td>
-            <td></td>
+        <tr style="height: 18px; border-style: hidden;">
+            <td style="width: 75.7668%; height: 18px; border-style: hidden;"><strong>Challan no: {{challan_info.invoice_no}}</strong></td>
+            <td style="width: 24.2332%; height: 18px;"><strong>Date: {{challan_info.order_date}}</strong></td>
         </tr>
         </tbody>
-        <tfoot>
-        <tr>
-            <th colspan="3" style="text-align: left;">E-BIN : 000375491, TIN NO : 581652956498</th>
-            <th>Total</th>
-            <th style="background-color:#d8d4de;"></th>
-        </tr>
-        </tfoot>
     </table>
-
-    <p style="margin-left:10.5em">Taka (in Words):</p>
-    <div class="rotate">Condition</div>
-    <p style="margin-left:13em; margin-top:-2.6em; Width: 800px">*All The Goods Mentioned In this Invoice Are Correct
-        and Equal And I have Signed.</p>
-    <p style="margin-left:13em; Width: 1000px">*The Products Sold Will Not Be Refunded.</p>
-
-
-    <div class="container" style="margin-left: 9em; margin-top:3em;">
-        <div class="row">
-            <div class="col-sm-4">
-                <p style="text-decoration: overline;">Receiver's Signature</p>
-            </div>
-            <div class="col-sm-4">
-                <p style="text-decoration: overline;">Delivery By</p>
-            </div>
-            <div class="col-sm-3.5">
-                <p style="text-decoration: overline;">For: <b>Shopno Trading Corporation</b>></p>
-            </div>
-        </div>
-    </div>
-
 </div>
+<div class="center" style="text-align: left;">
+    <table style="height: 18px; width: 100%; border-collapse: collapse;" border="0">
+        <tbody>
+        <tr style="height: 18px; border-style: hidden;">
+            <td style="width: 75.7668%; height: 18px;"><strong>Name: {{challan_info.customer}}</strong></td>
+            <td style="width: 24.2332%; height: 18px; border-style: hidden;"><strong>Bill no: </strong></td>
+        </tr>
+        </tbody>
+    </table>
+    <strong>Address: {{challan_info.address}}</strong></div>
+<div class="center" style="text-align: left;">&nbsp;</div>
 
-</body>
-</html>
+<div class="center" style="text-align: left;">
+    <table style="height: 98px; width: 100%; border-collapse: collapse; margin-left: auto; margin-right: auto;"
+           border=".5" cellspacing="2" cellpadding="2">
+        <tbody>
+        <tr style="height: 18px;">
+            <td style="width: 11.82%; height: 43px; text-align: center;">Sl. No.</td>
+            <td style="width: 34.1105%; height: 43px; text-align: center;">Description of goods</td>
+            <td style="width: 14.4785%; height: 43px; text-align: center;">Packing</td>
+            <td style="width: 16.5235%; height: 43px; text-align: center;">Unit/Kgs</td>
+            <td style="width: 23.0675%; height: 43px; text-align: center;">Quantity</td>
+        </tr>
+
+
+        <tr>
+            <td style="width: 11.82%; height: 500px; text-align: center; vertical-align: top;">
+
+                {% for item in sales_item %}
+                <p style="padding-top: 25px;">{{forloop.counter}}</p>
+                {% endfor %}
+
+            </td>
+            <td style="width: 34.1105%; height: 500px; text-align: center; vertical-align: top;">
+
+                {% for item in sales_item %}
+                <p style="padding-top: 25px;"> {{item.product}}</p>
+                {% endfor %}
+
+            </td>
+
+            <td style="width: 14.4785%; height: 500px; text-align: center; vertical-align: top;">
+
+                {% for item in sales_item %}
+                <p style="padding-top: 25px;">{{item.product.packing}}</p>
+                {% endfor %}
+
+            </td>
+            <td style="width: 16.5235%; height: 500px; text-align: center; vertical-align: top;">
+
+                {% for item in sales_item %}
+                <p style="padding-top: 25px;">{{item.price}}</p>
+                {% endfor %}
+
+            </td>
+            <td style="width: 23.0675%; height: 500px; text-align: center; vertical-align: top;">
+                {% for item in sales_item %}
+                <p style="padding-top: 25px;">{{item.quantity}}</p>
+                {% endfor %}
+            </td>
+        </tr>
+
+
+        <tr style="height: 39px;">
+            <th style="width: 60.409%; height: 39px; text-align: left; vertical-align: middle;" colspan="3"><strong>E-BIN
+                : 000375491, TIN NO : 581652956498</strong></th>
+            <td style="width: 16.5235%; text-align: center; height: 39px;">Total</td>
+            <td style="width: 23.0675%; text-align: center; height: 39px;">{{total_qty}}</td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>

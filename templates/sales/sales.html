@@ -26,6 +26,7 @@
                 <thead>
                 <tr>
                     <th class="text-center">Date</th>
+                    <th class="text-center">Challan No</th>
                     <th class="text-center">Bill No</th>
                     <th class="text-center">Customer</th>
                     <th class="text-center">Qty</th>
@@ -43,6 +44,7 @@
                 <tr>
                     <td class="text-center">{{item.order_date}}</td>
                     <td class="text-center">{{item.invoice_no}}</td>
+                    <td class="text-center">-</td>
                     <td class="text-center">{{item.customer}}</td>
                     <td class="text-center">{{item.quantity}}</td>
                     <td class="text-center">{{item.total_amount}}</td>
@@ -59,7 +61,6 @@
 
                         <div class="modal fade" id="postmodal{{item.invoice_no}}" role="dialog">
                             <div class="modal-dialog">
-
                                 <!-- Modal content-->
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -76,7 +77,7 @@
                                         <button type="button" class="btn btn-danger" data-dismiss="modal">
                                             Cancel
                                         </button>
-                                        <a href="{% url 'transfer-stock-confirm' invoice_no=item.invoice_no %}"
+                                        <a href="{% url 'post-sales' invoice_no=item.invoice_no %}"
                                            class="btn btn-primary">Post</a>
                                     </div>
                                 </div>
@@ -94,15 +95,43 @@
 
 
                     <td class="text-center">
-                        {% if item.status == "Open" %}
 
-                        <a href="#" >
+                        {% if item.status == "Open" %}
+                        <a href="{% url 'print-challan' invoice_no=item.invoice_no %}" >
                             <button class="btn btn-outline-info"><i class="fa fa-edit"></i></button>
                         </a>
 
-                        <a href="#" >
-                            <button class="btn btn-outline-danger"><i class="fa fa-trash"></i></button>
-                        </a>
+
+                          <button class="btn btn-outline-danger" data-toggle="modal"
+                                            data-target="#deletemodal{{item.invoice_no}}">
+                                        <i class="fa fa-trash"></i></button>
+
+
+                        <div class="modal fade" id="deletemodal{{item.invoice_no}}" role="dialog">
+                            <div class="modal-dialog">
+                                <!-- Modal content-->
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h4 class="modal-title">Delete Sales Item</h4>
+                                        <button type="button" class="close" data-dismiss="modal">&times;
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h5 class="text-center p-2">Total Qty: {{item.quantity}}</h5>
+                                        <p>You are going to delete this data from database. Deleting it will delete relevant entries from related tables.
+                                            This process can not be undone.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                            Cancel
+                                        </button>
+                                        <a href="{% url 'sales-delete' invoice_no=item.invoice_no %}"
+                                           class="btn btn-primary">Delete</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
 
                         <!-- Button trigger modal -->
                         <button type="button" class="btn btn-outline-info" data-toggle="modal"
@@ -132,8 +161,8 @@
 
                         {% else %}
 
-                        <a href="#"><button class="btn btn-outline-info">Bill</button></a>
                         <a href="{% url 'print-challan' invoice_no=item.invoice_no %}" target="_blank"><button class="btn btn-outline-info">Challan</button></a>
+                        <a href="{% url 'print-bill' invoice_no=item.invoice_no %}" target="_blank"><button class="btn btn-outline-info">Bill</button></a>
 
                         {% endif %}
 
@@ -160,20 +189,6 @@ $(document).ready(function() {
         order: [[ 0, 'desc' ]],
     });
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </script>
@@ -226,21 +241,6 @@ $(document).ready(function() {
         req.open("GET" ,url , true);
         req.send();
      }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </script>

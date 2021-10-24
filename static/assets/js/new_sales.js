@@ -20,6 +20,22 @@ $(document).ready(function () {
         });
     });
 
+//     $('#id_warehouse').on('change', function () {
+//        console.log("On Warehouse selected")
+//        let warehouse_id = $(this).children('option:selected').val();
+//        console.log(warehouse_id);
+//        $.ajax({
+//            url: 'get-available-stock-by-warehouse',
+//            data: {
+//              'warehouse_id': warehouse_id
+//            },
+//            dataType: 'json',
+//            success: function (data) {
+//                console.log(data);
+//            }
+//        });
+//    });
+
 });
 
      //creates custom alert object
@@ -97,6 +113,7 @@ $(document).ready(function () {
             e.preventDefault();
             //gets the values
             var element = $(this);
+            var item = element.parents('.form-row').find('.product').val();
             var quantity = element.parents('.form-row').find('.quantity').val();
             var perprice = element.parents('.form-row').find('.price').val();
 
@@ -105,9 +122,8 @@ $(document).ready(function () {
             //sets it to field
             element.parents('.form-row').find('.amount').val(tprice);
 
-
-
            setTotalQtyAndAmount();
+           getAvailableStockByWarehouse(element, item);
 
             //Set Total
              //$("#sales_total_amount").val(total_price);
@@ -117,10 +133,27 @@ $(document).ready(function () {
 
 
 
+        function getAvailableStockByWarehouse(element, item) {
+            console.log("On Item Selected for Stock ")
+             var warehouse_id = $('#id_warehouse').val();
+             console.log(warehouse_id)
+            $.ajax({
+                url: 'get-available-stock-by-warehouse',
+                data: {
+                  'warehouse_id': warehouse_id,
+                  'item': item,
+                },
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+                     element.parents('.form-row').find('.stock-qty').val(data["stock"]);
+                }
+            });
+
+        }
+
+
         function setTotalQtyAndAmount() {
-            console.log("On Quantity or unit price Change")
-            console.log("Form length: "+total)
-            //id_form-0-amount
             var total_price = 0
             var total_qty = 0
 
@@ -133,7 +166,6 @@ $(document).ready(function () {
                      total_price = total_price + parseFloat(amount);
                      total_qty = total_qty + parseFloat(qty);
 
-                     console.log("price: "+qty)
                 }
 
              var paid_amount = document.getElementById("sales_paid_amount").value;
@@ -147,7 +179,6 @@ $(document).ready(function () {
         }
 
      $('#sales_paid_amount').keyup(function () {
-        console.log("Due: "+$(this).val())
         var paid_amount = $(this).val();
         var total_amount = document.getElementById("sales_total_amount").value;
         var due_amount = total_amount - paid_amount;
