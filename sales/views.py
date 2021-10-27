@@ -15,7 +15,7 @@ from sales.serializers import SalesItemSerializerPopUp
 from sales.utils import render_to_pdf, getWords
 from setup_data.models import Customers
 from stock.models import StockPrime
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 
 
 class SalesListView(LoginRequiredMixin, ListView, ):
@@ -65,9 +65,8 @@ def new_sales(request):
                         child.is_active = True
                         child.save()
                     except IntegrityError as e:
-                        if 'unique constraint' in e.args:
-                            messages.add_message(request, messages.SUCCESS, 'You are entering the same item multiple times')
-                            return
+                        print(e.args)
+
                 else:
                     print("Child Form Error")
                     print(form.errors)
